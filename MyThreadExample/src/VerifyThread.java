@@ -1,9 +1,9 @@
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class VerifyThread extends Thread{
-    private LinkedList<Long> linkedList;
-    public VerifyThread(LinkedList<Long> list){
-        this.linkedList = list;
+    private ArrayList<Long> arrayList;
+    public VerifyThread(ArrayList<Long> list){
+        this.arrayList = list;
     }
 
     @Override
@@ -15,11 +15,11 @@ public class VerifyThread extends Thread{
     }
 
     private boolean verify() {
-        if( linkedList.size() != Main.LIMIT ){
+        if( arrayList.size() != Main.LIMIT ){
             return false;
         }
-        for( int i = 1; i < linkedList.size(); i++ ){
-            if( linkedList.get(i-1) + 1 != linkedList.get(i)  ){
+        for(int i = 1; i < arrayList.size(); i++ ){
+            if( arrayList.get(i-1) + 1 != arrayList.get(i)  ){
                 return false;
             }
         }

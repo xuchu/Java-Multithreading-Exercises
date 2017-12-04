@@ -1,14 +1,14 @@
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ConsumerThread extends Thread {
     private ConcurrentLinkedQueue<Long> concurrentLinkedQueue;
-    private LinkedList<Long> linkedList;
+    private ArrayList<Long> arrayList;
 
     public ConsumerThread(ConcurrentLinkedQueue<Long> concurrentLinkedQueue,
-                          LinkedList<Long> list){
+                          ArrayList<Long> list){
         this.concurrentLinkedQueue = concurrentLinkedQueue;
-        this.linkedList = list;
+        this.arrayList = list;
     }
 
     @Override
@@ -30,19 +30,22 @@ public class ConsumerThread extends Thread {
     }
 
     private void writeToList(long value) throws InterruptedException{
-        synchronized (linkedList) {
-            if( linkedList.size() == 0 ){
-                linkedList.add(value);
+        synchronized (arrayList) {
+            if( arrayList.size() == 0 ){
+                arrayList.add(value);
                 return;
             }
-            long lastListValue = linkedList.peekLast();
+            long lastListValue = getLastValue(arrayList);
             while ( value != lastListValue + 1) {
-                System.out.println("waiting for another thread to get the right value");
-                linkedList.wait();
-                lastListValue = linkedList.peekLast();
+                arrayList.wait();
+                lastListValue = getLastValue(arrayList);
             }
-            linkedList.add(value);
-            linkedList.notifyAll();
+            arrayList.add(value);
+            arrayList.notifyAll();
         }
+    }
+
+    private long getLastValue(ArrayList<Long> arrayList){
+        return arrayList.get(arrayList.size() - 1);
     }
 }
